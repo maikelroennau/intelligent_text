@@ -9,8 +9,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -148,8 +146,8 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_btnButtonMouseReleased
 
     private void textAreaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textAreaKeyReleased
-        if(evt.getKeyCode() == 32) {
-            if(getText().split(" ").length > MINIMUM_WORDS && getText().split(" ").length % 50 == 0) {
+        if (evt.getKeyCode() == 32) {
+            if (getText().split(" ").length > MINIMUM_WORDS && getText().split(" ").length % 50 == 0) {
                 search();
             }
         }
@@ -198,9 +196,9 @@ public class Main extends javax.swing.JFrame {
             public void run() {
 
                 String text = getText();
-                
+
                 if (text.length() != 0) {
-                    
+
                     labelInfo.setText("Searching articles...");
 
                     String title = "Title";
@@ -228,13 +226,13 @@ public class Main extends javax.swing.JFrame {
                         labelInfo.setText("No articles found.");
                     } else {
                         labelInfo.setText(formatedArticles.size() + " articles found.");
-                        
+
                         articles = new String[formatedArticles.size()];
 
                         for (int i = 0; i < formatedArticles.size(); i++) {
                             articles[i] = formatedArticles.get(i);
                         }
-                        
+
                         articlesList.setListData(articles);
                     }
                 }
@@ -249,7 +247,7 @@ public class Main extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
