@@ -4,10 +4,10 @@ Simple software to help writing texts. It provides insights while the user is wr
 
 ## Requeriments
 
-- [Google Scholar Paper Finder](https://github.com/maikelronnau/google_scholar_paper_finder) - search engine
-- [rake-nltk](https://github.com/csurfer/rake-nltk)
-- [TextRank](https://github.com/davidadamojr/TextRank)
-- [Scholar](https://github.com/ckreibich/scholar.py) - already included and with a little change, just to return the results
+- [Google Scholar Paper Finder](https://github.com/maikelronnau/google_scholar_paper_finder) - custom search engine
+- [rake-nltk](https://github.com/csurfer/rake-nltk) - keyword extractor base
+- [TextRank](https://github.com/davidadamojr/TextRank) - keyword extractor
+- [Scholar](https://github.com/ckreibich/scholar.py) - search engine base
 - [Pyinstaller](http://www.pyinstaller.org/) - to compile the search engine
 
 ## How to setup
