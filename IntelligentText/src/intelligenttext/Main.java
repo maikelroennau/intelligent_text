@@ -5,36 +5,66 @@
  */
 package intelligenttext;
 
-import org.python.util.PythonInterpreter;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
- * @author 110453310
+ * @author Maikel Maciel Rönnau
  */
 public class Main extends javax.swing.JFrame {
+
+    private int words = 0;
+    private final int MINIMUM_WORDS = 200;
 
     /**
      * Creates new form Main
      */
     public Main() {
+        selecionarLookAndFeel();
+        setExtendedState(MAXIMIZED_BOTH);
         initComponents();
     }
-    
-    public static void searchArticles() {
-        PythonInterpreter interpreter = new PythonInterpreter();
-//        interpreter.exec("import scholar");
-//        interpreter.exec("import search");
 
-        interpreter.exec("import os");
-        interpreter.exec("from . import scholar");
-        interpreter.exec("local = os.listdir('.')");
-        interpreter.exec("print local");
-        
-    }
+    /**
+     * @author Maikel Maciel Rönnau
+     * @version 1.0
+     * @since 05/01/2015
+     */
+    private void selecionarLookAndFeel() {
 
-    // http://www.jython.org/jythonbook/en/1.0/JythonAndJavaIntegration.html#utilizing-pythoninterpreter
-    // https://stackoverflow.com/questions/5711084/java-runtime-getruntime-getting-output-from-executing-a-command-line-program
-    
+        /**
+         * * Selecionando Look & Feel ****************************************
+         */
+        try {
+
+            //Selecionando Look & Feel:
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Erro ao inicializar interface. Procure o administrador do sistema "
+                    + "para resolver este problema.",
+                    "Erro",
+                    JOptionPane.ERROR);
+            //Fim da mensagem de erro.
+        }//Fecha catch.
+
+        /**
+         * * Fim da seleção do Look & Feel ***********************************
+         */
+    }//Fecha método selecionarLookAndFeel.
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -44,22 +74,31 @@ public class Main extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         textArea = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
-        resultsList = new javax.swing.JList<>();
-        btnList = new javax.swing.JButton();
+        articlesList = new javax.swing.JList<>();
+        labelInfo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Intelligent Text");
+        setName("Intelligent Text"); // NOI18N
         setPreferredSize(new java.awt.Dimension(800, 600));
-        setResizable(false);
+        setSize(new java.awt.Dimension(800, 600));
 
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(600, 400));
+        btnButton.setText("Search");
+        btnButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                btnButtonMouseReleased(evt);
+            }
+        });
 
         textArea.setColumns(20);
         textArea.setLineWrap(true);
         textArea.setRows(5);
+        textArea.setTabSize(4);
+        textArea.setWrapStyleWord(true);
         textArea.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 textAreaKeyReleased(evt);
@@ -67,14 +106,8 @@ public class Main extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(textArea);
 
-        jScrollPane2.setViewportView(resultsList);
-
-        btnList.setText("Search");
-        btnList.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                btnListMouseReleased(evt);
-            }
-        });
+        articlesList.setFont(new java.awt.Font("Ubuntu", 0, 10)); // NOI18N
+        jScrollPane2.setViewportView(articlesList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -83,13 +116,14 @@ public class Main extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnList)))
+                        .addComponent(labelInfo)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnButton))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -97,23 +131,116 @@ public class Main extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2))
+                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 629, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
-                .addComponent(btnList)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnButton)
+                    .addComponent(labelInfo))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnButtonMouseReleased
+        search();
+    }//GEN-LAST:event_btnButtonMouseReleased
+
     private void textAreaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textAreaKeyReleased
-        searchArticles();
+        if(evt.getKeyCode() == 32) {
+            if(getText().split(" ").length > MINIMUM_WORDS && getText().split(" ").length % 50 == 0) {
+                search();
+            }
+        }
     }//GEN-LAST:event_textAreaKeyReleased
 
-    private void btnListMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnListMouseReleased
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnListMouseReleased
+    private String getText() {
+        String interfaceText = this.textArea.getText();
+
+        if (interfaceText.isEmpty()) {
+            this.labelInfo.setText("It is necessary to write a text to find articles.");
+            return "";
+        }
+
+        if (interfaceText.split(" ").length < MINIMUM_WORDS) {
+            this.labelInfo.setText("The text is too small to look for articles.");
+            return "";
+        }
+
+        return interfaceText;
+    }
+
+    private String[] getArticles(String text) {
+
+        String articles[] = null;
+
+        try {
+
+            Runtime searchEngine = Runtime.getRuntime();
+
+            String command[] = {"search_engine/search_engine.exe", text};
+            Process searchProcess = searchEngine.exec(command);
+
+            BufferedReader resultOutput = new BufferedReader(new InputStreamReader(searchProcess.getInputStream()));
+
+            articles = resultOutput.readLine().split(";");
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return articles;
+    }
+
+    private void search() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                String text = getText();
+                
+                if (text.length() != 0) {
+                    
+                    labelInfo.setText("Searching articles...");
+
+                    String title = "Title";
+                    String year = "Year";
+                    String citations = "Citations";
+                    String url = "URL";
+
+                    String articles[] = getArticles(text);
+                    ArrayList<String> formatedArticles = new ArrayList<>();
+
+                    for (String article : articles) {
+                        try {
+                            String articlesItens[] = article.split(",");
+
+                            articlesItens[0] = "<html><b>" + articlesItens[0] + "</b><br>";
+                            articlesItens[1] = " " + articlesItens[1] + " - ";
+                            articlesItens[3] = "<a href=\"" + articlesItens[3] + "\">PDF Link</a></html>";
+
+                            formatedArticles.add(articlesItens[0] + articlesItens[1] + articlesItens[3]);
+                        } catch (Exception e) {
+                        }
+                    }
+
+                    if (formatedArticles.isEmpty()) {
+                        labelInfo.setText("No articles found.");
+                    } else {
+                        labelInfo.setText(formatedArticles.size() + " articles found.");
+                        
+                        articles = new String[formatedArticles.size()];
+
+                        for (int i = 0; i < formatedArticles.size(); i++) {
+                            articles[i] = formatedArticles.get(i);
+                        }
+                        
+                        articlesList.setListData(articles);
+                    }
+                }
+            }
+        }).start();
+    }
 
     /**
      * @param args the command line arguments
@@ -151,10 +278,11 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnList;
+    private javax.swing.JList<String> articlesList;
+    private javax.swing.JButton btnButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JList<String> resultsList;
+    private javax.swing.JLabel labelInfo;
     private javax.swing.JTextArea textArea;
     // End of variables declaration//GEN-END:variables
 }
