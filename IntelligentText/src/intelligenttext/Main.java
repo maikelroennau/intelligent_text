@@ -5,9 +5,12 @@
  */
 package intelligenttext;
 
+import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +26,7 @@ public class Main extends javax.swing.JFrame {
 
     private int words = 0;
     private final int MINIMUM_WORDS = 200;
+    private String articles[];
 
     /**
      * Creates new form Main
@@ -33,6 +37,10 @@ public class Main extends javax.swing.JFrame {
         initComponents();
     }
 
+    public void setArticles(String[] articles) {
+        this.articles = articles;
+    }
+    
     /**
      * @author Maikel Maciel Rönnau
      * @version 1.0
@@ -105,6 +113,11 @@ public class Main extends javax.swing.JFrame {
         jScrollPane1.setViewportView(textArea);
 
         articlesList.setFont(new java.awt.Font("Ubuntu", 0, 10)); // NOI18N
+        articlesList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                articlesListMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(articlesList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -119,7 +132,7 @@ public class Main extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnButton))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 508, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 19, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -139,6 +152,7 @@ public class Main extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnButtonMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnButtonMouseReleased
@@ -152,6 +166,15 @@ public class Main extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_textAreaKeyReleased
+
+    private void articlesListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_articlesListMouseClicked
+        if (evt.getClickCount() == 2) {
+            int index = this.articlesList.getSelectedIndex();
+            
+            String url = getItemUrl(index);
+            openLink(url);
+        }
+    }//GEN-LAST:event_articlesListMouseClicked
 
     private String getText() {
         String interfaceText = this.textArea.getText();
@@ -183,8 +206,8 @@ public class Main extends javax.swing.JFrame {
             BufferedReader resultOutput = new BufferedReader(new InputStreamReader(searchProcess.getInputStream()));
 
             articles = resultOutput.readLine().split(";");
-        } catch (IOException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException | NullPointerException ex) {
+            this.labelInfo.setText("No articles found.");
         }
 
         return articles;
@@ -203,10 +226,16 @@ public class Main extends javax.swing.JFrame {
 
                     String title = "Title";
                     String year = "Year";
-                    String citations = "Citations";
                     String url = "URL";
 
                     String articles[] = getArticles(text);
+                    
+                    if (articles == null) {
+                        System.out.println("No articles found.");
+                        return;
+                    }
+                    
+                    setArticles(articles);
                     ArrayList<String> formatedArticles = new ArrayList<>();
 
                     for (String article : articles) {
@@ -215,10 +244,11 @@ public class Main extends javax.swing.JFrame {
 
                             articlesItens[0] = "<html><b>" + articlesItens[0] + "</b><br>";
                             articlesItens[1] = " " + articlesItens[1] + " - ";
-                            articlesItens[3] = "<a href=\"" + articlesItens[3] + "\">PDF Link</a></html>";
+                            articlesItens[2] = "<a href=\"" + articlesItens[2] + "\">Open article on browser</a></html>";
 
-                            formatedArticles.add(articlesItens[0] + articlesItens[1] + articlesItens[3]);
+                            formatedArticles.add(articlesItens[0] + articlesItens[1] + articlesItens[2]);
                         } catch (Exception e) {
+                            System.out.println(e.getMessage());
                         }
                     }
 
@@ -238,6 +268,20 @@ public class Main extends javax.swing.JFrame {
                 }
             }
         }).start();
+    }
+    
+    public String getItemUrl(int index) {
+        String article[] = this.articles[index].split(",");
+        
+        return article[2];
+    }
+    
+    public void openLink(String link) {
+        try {
+            Desktop.getDesktop().browse(new URI(link));
+        } catch (URISyntaxException | IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.OFF, null, ex);
+        }
     }
 
     /**
