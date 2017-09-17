@@ -23,3 +23,10 @@ Simple software to help writing texts. It provides insights while the user is wr
 
 - Java interface
 - Python article search engine
+
+### Author
+
+**Maikel Maciel Rönnau**  
+*Computer Scientist  
+maikel.ronnau@ulbra.edu.br  
+[Linkedin](https://br.linkedin.com/in/maikelronnau)*
