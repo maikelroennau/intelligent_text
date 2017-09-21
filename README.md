@@ -28,5 +28,5 @@ Simple software to help writing texts. It provides insights while the user is wr
 
 **Maikel Maciel Rönnau**  
 *Computer Scientist  
-maikel.ronnau@ulbra.edu.br  
-[Linkedin](https://br.linkedin.com/in/maikelronnau)*
+maikel.ronnau@gmail.com  
+[Linkedin](https://br.linkedin.com/in/maikelronnau) - [GitHub](https://github.com/maikelronnau)*
